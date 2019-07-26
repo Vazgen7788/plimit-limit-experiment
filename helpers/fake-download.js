@@ -5,6 +5,6 @@ module.exports = function fakeDownload(url) {
     setTimeout(() => {
       console.log(`✅ FILE DOWNLOADED FROM ${url}`);
       resolve()
-    }, 3000);
+    }, 2000);
   });
 }
