@@ -1,0 +1,13 @@
+{
+  "name": "upload-files",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./node_modules/nodemon/bin/nodemon.js index.js"
+  },
+  "dependencies": {
+    "nodemon": "^1.19.1",
+    "p-limit": "^2.2.0"
+  }
+}
