@@ -2,11 +2,14 @@ const pLimit = require('p-limit');
 const fakeDownload = require('../helpers/fake-download');
 
 const Utils = (() => {
+  let hostConcurency = 3;
+  let systemConcurency = 10;
+
   return {
     getHostFromString(url) {
         let hostname;
 
-        if (url.indexOf("//") > -1) {
+        if (url.indexOf('//') > -1) {
           hostname = url.split('/')[2];
         } else {
           hostname = url.split('/')[0];
@@ -37,32 +40,28 @@ const Utils = (() => {
     downloadFiles(urls = []) {
       const hostGroups = this.groupUrlsByHost(urls);
       const hostDownloadGroups = [];
-      let downloadsCount = 0;
       let downloads = [];
 
       Object.keys(hostGroups).forEach((host, index) => {
-        const limitPerHost = pLimit(3);
-        downloadsCount += hostGroups[host].length;
+        const limitPerHost = pLimit(hostConcurency);
         hostDownloadGroups[index] = hostGroups[host].map(url => {
-          return limitPerHost(() => fakeDownload(url))
+          return () => limitPerHost(() => fakeDownload(url))
         });
       });
 
-
-      while (hostGroups.length) {
-        hostGroups.forEach(group => {
-          const downloadsChunk = group.splice(0, 3);
-          downloads = [ ...downloads, group.splice(0, 3)]; //3 pLimit
+      while (hostDownloadGroups.length) {
+        hostDownloadGroups.forEach(group => {
+          const downloadsChunk = group.splice(0, hostConcurency);
+          downloads = [ ...downloads, ...downloadsChunk];
 
           if (!group.length) {
-            const groupIndex = hostGroups.indexOf(group);
-            hostGroups.splice(groupIndex, 1);
+            const groupIndex = hostDownloadGroups.indexOf(group);
+            hostDownloadGroups.splice(groupIndex, 1);
           }
         });
       }
 
-
-      const limit = pLimit(10);
+      const limit = pLimit(systemConcurency);
       const promises = downloads.map(fn => {
           return limit(() => fn());
       });
