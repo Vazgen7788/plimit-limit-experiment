@@ -8,8 +8,8 @@ function fillFakeUrls(basedOn, count) {
 
 
 module.exports = [
-  ...fillFakeUrls('https://google.com', 30),
-  ...fillFakeUrls('https://yahoo.com', 20),
+  ...fillFakeUrls('https://google.com', 50),
+  ...fillFakeUrls('https://yahoo.com', 60),
   ...fillFakeUrls('https://yandex.ru', 40),
   ...fillFakeUrls('https://apple.com', 10),
   ...fillFakeUrls('https://intercom.com', 15),
